@@ -40,18 +40,7 @@ interface Room {
     maxPlayers: number;
 }
 
-const images = [
-    "https://res.cloudinary.com/demo/image/upload/v1652345767/docs/demo_image2.jpg",
-    "https://res.cloudinary.com/demo/image/upload/v1652366604/docs/demo_image5.jpg",
-    "https://res.cloudinary.com/demo/image/upload/v1652345874/docs/demo_image1.jpg",
-];
-var settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-};
+
 const Room: React.FC = () => {
     const [options, setOptions] = React.useState<readonly Film[]>([]);
     const [loading, setLoading] = React.useState(false);

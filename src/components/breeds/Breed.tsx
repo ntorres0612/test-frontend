@@ -3,8 +3,7 @@ import React, { useEffect } from "react";
 
 
 import "./breed.css";
-import { IconButton, InputAdornment, OutlinedInput, TextField } from "@mui/material";
-import { Search } from "@mui/icons-material";
+import { Button, Card, CardActions, CardContent, CardMedia, TextField, Typography } from "@mui/material";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -15,7 +14,9 @@ import Paper from '@mui/material/Paper';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import { Button } from '@mui/material'
+import { getBreeds, getBreedsById, getImagesById } from "../../api/breedApi";
+import { CatBreed } from "../../data/model/CatBreedModel";
+import { ImageModel } from "../../data/model/ImageModel";
 
 function createData(
     name: string,
@@ -57,30 +58,55 @@ function sleep(duration: number): Promise<void> {
 const Breed: React.FC = () => {
 
     const [open, setOpen] = React.useState(false);
-    const [options, setOptions] = React.useState<readonly Film[]>([]);
+    const [breeds, setBreeds] = React.useState<readonly CatBreed[]>([]);
+    const [images, setImages] = React.useState<readonly ImageModel[]>([]);
+    const [selectedBreed, setSelectedBreed] = React.useState<CatBreed>();
     const [loading, setLoading] = React.useState(false);
 
 
     useEffect(() => {
+        getBreeds().then((response: any) => {
+            console.log("response", response);
+
+            const breeds: CatBreed[] = response.map((item: any) => ({
+                ...item
+            }));
+            setBreeds([...breeds]);
+
+        })
     }, []);
 
-    const onPlay = (room: Room) => () => {
-        console.log("OnPlay...", room);
+    const breedById = (catBreed: CatBreed) => {
+
+        getBreedsById(catBreed.id).then((response: any) => {
+            console.log("response", response);
+            setSelectedBreed(response)
+            getImagesById(response.reference_image_id).then((resp: any) => {
+                console.log('resp', resp);
+                setImages(resp)
+            })
+        })
     };
+
+
     const handleOpen = () => {
         setOpen(true);
         (async () => {
             setLoading(true);
-            await sleep(1e3); // For demo purposes.
+            await sleep(1e3);
             setLoading(false);
 
-            setOptions([...topFilms]);
+
         })();
     };
 
     const handleClose = () => {
         setOpen(false);
-        setOptions([]);
+        // setOptions([]);
+    };
+    const handleChange = (catBreed: CatBreed) => {
+        breedById(catBreed)
+
     };
     return (
         <div id="search_container">
@@ -90,9 +116,13 @@ const Breed: React.FC = () => {
                     open={open}
                     onOpen={handleOpen}
                     onClose={handleClose}
-                    isOptionEqualToValue={(option, value) => option.title === value.title}
-                    getOptionLabel={(option) => option.title}
-                    options={options}
+                    onChange={(event: any, newValue: CatBreed | null) => {
+                        if (newValue != null)
+                            handleChange(newValue);
+                    }}
+                    isOptionEqualToValue={(option, value) => option.name === value.name}
+                    getOptionLabel={(option) => option.name}
+                    options={breeds}
                     loading={loading}
                     renderInput={(params) => (
                         <TextField
@@ -115,9 +145,29 @@ const Breed: React.FC = () => {
             </div>
             <div id="search_body">
                 <div id="detail-breed-container">
-                    <div id="detail-breed-container-left">LEFT</div>
+                    <div id="detail-breed-container-left">
+                        <Card sx={{ maxWidth: 345 }}>
+                            <CardMedia
+                                sx={{ height: 140 }}
+                                image="/static/images/cards/contemplative-reptile.jpg"
+                                title="green iguana"
+                            />
+                            <CardContent>
+                                <Typography gutterBottom variant="h5" component="div">
+                                    {selectedBreed?.name}
+                                </Typography>
+                                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                                    {selectedBreed?.description}
+                                </Typography>
+                            </CardContent>
+                            <CardActions>
+                                <Button size="small">Share</Button>
+                                <Button size="small">Learn More</Button>
+                            </CardActions>
+                        </Card>
+                    </div>
                     <div id="detail-breed-container-right">
-                        <img width={'100%'} height={'100%'} src="https://cdn2.thecatapi.com/images/hBXicehMA.jpg" />
+                        <img width={'100%'} height={'100%'} src={images.length > 0 ? images[0].url : ""} />
                     </div>
                 </div>
             </div>

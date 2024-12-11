@@ -82,3 +82,8 @@ form input {
     color: red;
     font-size: 12px;
 }
+
+.successRegister {
+    color: rgb(0, 112, 52);
+    font-size: 14px;
+}

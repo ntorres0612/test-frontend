@@ -4,6 +4,8 @@ import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router-dom";
 import { loginToken } from "../../utils";
 import "./login.css";
+import { login } from "../../api/authApi";
+import { LoginRequest } from "../../data/model/LoginRequest";
 
 interface FormValues {
   email: string;
@@ -33,17 +35,26 @@ export default function Login() {
     }));
   };
 
-  const showRegisterForm = (e: any) => {
-    console.log("show...");
-  }
+
   const onLogin = (e: any) => {
     e.preventDefault();
-    loginToken("123456")
-    navigate("/dashboard")
-    // Example: Perform login logic here
-    // loginToken(res.token)
-    // navigate("/dashboard")
-    // setErrorLogin(res.message)
+    const loginRequest: LoginRequest = {
+      "email": values.email,
+      "password": values.password
+    };
+    login(loginRequest).then((response: any) => {
+      console.log('response', response);
+      if (response.token) {
+        loginToken(response.token)
+        navigate("/dashboard")
+      } else {
+        setErrorLogin("Datos incorrectos")
+      }
+
+    }).catch(e => {
+      setErrorLogin("Datos incorrectos")
+
+    })
   };
 
   return (
@@ -63,7 +74,7 @@ export default function Login() {
         value={values.email}
         name="email"
         id="email"
-        label="email"
+        label="Email"
         variant="outlined"
       />
 
@@ -76,7 +87,7 @@ export default function Login() {
         name="password"
         type="password"
         id="password"
-        label="Passwordx"
+        label="Password"
         variant="outlined"
       />
 

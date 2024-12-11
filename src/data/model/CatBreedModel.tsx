@@ -1,0 +1,41 @@
+import { Weight } from "./WeightModel";
+
+export interface CatBreed {
+    weight: Weight;
+    id: string;
+    name: string;
+    temperament: string;
+    origin: string;
+    description: string;
+    indoor: number;
+    lap: number;
+    adaptability: number;
+    grooming: number;
+    intelligence: number;
+    vocalisation: number;
+    experimental: number;
+    hairless: number;
+    natural: number;
+    rare: number;
+    rex: number;
+    hypoallergenic: number;
+    cfa_url: string;
+    vetstreet_url: string;
+    vcahospitals_url: string;
+    country_codes: string;
+    country_code: string;
+    life_span: string;
+    alt_names: string;
+    affection_level: number;
+    child_friendly: number;
+    dog_friendly: number;
+    energy_level: number;
+    health_issues: number;
+    shedding_level: number;
+    social_needs: number;
+    stranger_friendly: number;
+    suppressed_tail: number;
+    short_legs: number;
+    wikipedia_url: string;
+    reference_image_id: string;
+}

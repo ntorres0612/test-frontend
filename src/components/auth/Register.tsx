@@ -1,8 +1,9 @@
 import React, { Fragment, useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import { useNavigate } from "react-router-dom";
 import "./register.css";
+import { RegisterRequest } from "../../data/model/RegisterRequest";
+import { register } from "../../api/authApi";
 
 interface FormValues {
     fullname: string,
@@ -12,6 +13,7 @@ interface FormValues {
 
 export default function Register() {
     const [errorLogin, setErrorLogin] = useState<string>("");
+    const [successMessage, setSuccessMessage] = useState<string>("");
 
     const initialValues: FormValues = {
         fullname: "",
@@ -20,7 +22,6 @@ export default function Register() {
     };
 
     const [values, setValues] = useState<FormValues>({ ...initialValues });
-    const navigate = useNavigate();
 
     const handleFieldChange = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -35,22 +36,34 @@ export default function Register() {
     };
 
 
-    const onLogin = (e: any) => {
+    const onRegister = (e: any) => {
         e.preventDefault();
-        console.log("show");
-        // loginToken("123456")
-        // navigate("/dashboard")
-        // Example: Perform login logic here
-        // loginToken(res.token)
-        // navigate("/dashboard")
-        // setErrorLogin(res.message)
+        const registerRequest: RegisterRequest = {
+            "fullName": values.fullname,
+            "email": values.email,
+            "password": values.password
+        };
+        register(registerRequest).then((response: any) => {
+            console.log('response', response);
+            if (response.id) {
+                setSuccessMessage("Registrado exitosamente")
+                setValues(initialValues)
+            } else {
+                setErrorLogin("Datos incorrectos")
+            }
+
+        }).catch(e => {
+            setErrorLogin("Datos incorrectos")
+
+        })
+
     };
 
     return (
 
         <form
             onSubmit={(e) => {
-                onLogin(e);
+                onRegister(e);
             }}
             className="register-wrapper"
         >
@@ -61,7 +74,7 @@ export default function Register() {
                     handleFieldChange(event, "fullname", event.target.value)
                 }
                 autoComplete="off"
-                value={values.email}
+                value={values.fullname}
                 name="fullname"
                 id="fullname"
                 label="Fullname"
@@ -97,6 +110,7 @@ export default function Register() {
                 Register
             </Button>
 
+            <div className="successRegister">{successMessage}</div>
             <div className="errorLogin">{errorLogin}</div>
         </form>
     );
