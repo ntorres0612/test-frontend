@@ -1,0 +1,42 @@
+#search_container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+
+#search_header {
+    width: 50%;
+    height: 100px;
+    margin-top: 10px;
+}
+
+#search_body {
+    width: 100%;
+    background-color: antiquewhite;
+}
+
+#detail-breed-container {
+    display: flex;
+    height: 100%;
+}
+
+#detail-breed-container-left {
+    width: 30%;
+    background-color: aquamarine;
+    display: flex;
+}
+
+#detail-breed-container-right {
+    flex-grow: 1;
+    width: 30%;
+    background-color: rgb(20, 81, 60);
+    display: flex;
+}
+
+#search_footer {
+    margin-top: 10px;
+    width: 100%;
+    background-color: antiquewhite;
+}

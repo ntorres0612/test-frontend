@@ -1,0 +1,84 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form input {
+    margin: 3px;
+}
+
+
+.register-wrapper {
+
+    background-color: white;
+    font-weight: bold;
+    font-size: 20px;
+    color: rgb(110, 129, 145);
+    width: 300px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    margin: 20px;
+}
+
+.register-wrapper .MuiFormControl-root {
+    margin: 10px;
+}
+
+.tables {
+    display: flex;
+    flex-direction: row;
+}
+
+.bold {
+    font-weight: bold !important;
+    color: black !important;
+    font-size: 30px !important;
+}
+
+.blank {
+    background-color: white !important;
+}
+
+
+.table {
+    border: 2px solid silver;
+    padding: 5px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    margin: 5px solid orange;
+    display: flex;
+    width: max-content;
+}
+
+.cell {
+    padding: 5px;
+    width: 32px;
+    height: 32px;
+    margin: 1px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 18px;
+    background-color: rgb(243, 249, 255);
+    color: rgb(96, 96, 96);
+}
+
+.played {
+    background-color: rgb(46, 46, 46);
+    color: white
+}
+
+.errorLogin {
+    color: red;
+    font-size: 12px;
+}
