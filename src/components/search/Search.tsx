@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
-import { Film } from '../../data/model/Film';
+import React, { useEffect, useState } from "react";
 
 
 import "./search.css";
-import { IconButton, InputAdornment, OutlinedInput, TextField } from "@mui/material";
+import { IconButton, InputAdornment, OutlinedInput } from "@mui/material";
 import { Search } from "@mui/icons-material";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -13,62 +12,52 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-import { Button } from '@mui/material'
-
-function createData(
-    name: string,
-    calories: number,
-    fat: number,
-    carbs: number,
-    protein: number,
-) {
-    return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-];
-
-
-
-interface Room {
-    id: string;
-    name: string;
-    players: number;
-    maxPlayers: number;
-}
+import { breedsSearch } from "../../api/breedApi";
+import { CatBreed } from "../../data/model/CatBreedModel";
+import { Link } from "react-router-dom";
 
 
 const Room: React.FC = () => {
-    const [options, setOptions] = React.useState<readonly Film[]>([]);
-    const [loading, setLoading] = React.useState(false);
 
+    const [breeds, setBreeds] = useState<readonly CatBreed[]>([]);
+    const [inputValue, setInputValue] = useState("");
     useEffect(() => {
-    }, []);
+        const getData = setTimeout(() => {
+            breedsSearch(inputValue).then((response: any) => {
+                console.log("response: ", response);
+                setBreeds(response)
+            })
 
-    const onPlay = (room: Room) => () => {
-        console.log("OnPlay...", room);
-    };
+        }, 2000)
+
+        return () => clearTimeout(getData)
+    }, [inputValue])
+
 
     return (
         <div id="search_container">
             <div id="search_header">
-                <OutlinedInput fullWidth label="fullWidth" id="fullWidth" endAdornment={
-                    <InputAdornment position="end">
-                        <IconButton
-                            aria-label={
-                                'hide the password'
-                            }
+                <OutlinedInput
+                    fullWidth
+                    autoComplete="off"
+                    label="fullWidth"
+                    id="fullWidth"
+                    value={inputValue} onChange={(event) => setInputValue(event.target.value)}
+                    endAdornment={
+                        <InputAdornment position="end">
+                            <IconButton
+                                aria-label={
+                                    'hide the password'
+                                }
 
-                            edge="end"
-                        >
-                            {<Search />}
-                        </IconButton>
-                    </InputAdornment>
-                } />
+                                edge="end"
+                            >
+                                {<Search />}
+                            </IconButton>
+                        </InputAdornment>
+                    } />
             </div>
+
 
             <div id="search_footer">
                 <TableContainer component={Paper}>
@@ -76,23 +65,27 @@ const Room: React.FC = () => {
                         <caption>A basic table example with a caption</caption>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Dessert (100g serving)</TableCell>
-                                <TableCell align="right">Calories</TableCell>
-                                <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                                <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                                <TableCell align="right">Protein&nbsp;(g)</TableCell>
+                                <TableCell>name</TableCell>
+                                <TableCell>weight</TableCell>
+                                <TableCell>temperament</TableCell>
+                                <TableCell>origin</TableCell>
+                                <TableCell>life_span</TableCell>
+                                <TableCell>adaptability</TableCell>
+                                <TableCell >wikipedia_url</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows.map((row) => (
-                                <TableRow key={row.name}>
+                            {breeds.map((breed) => (
+                                <TableRow key={breed.id}>
                                     <TableCell component="th" scope="row">
-                                        {row.name}
+                                        {breed.name}
                                     </TableCell>
-                                    <TableCell align="right">{row.calories}</TableCell>
-                                    <TableCell align="right">{row.fat}</TableCell>
-                                    <TableCell align="right">{row.carbs}</TableCell>
-                                    <TableCell align="right">{row.protein}</TableCell>
+                                    <TableCell >{`${JSON.stringify(breed.weight)}`}</TableCell>
+                                    <TableCell >{breed.temperament}</TableCell>
+                                    <TableCell >{breed.origin}</TableCell>
+                                    <TableCell >{breed.life_span}</TableCell>
+                                    <TableCell >{breed.adaptability}</TableCell>
+                                    <TableCell ><Link to={`${breed.wikipedia_url}`} target="_blank" >Wikipedia</Link></TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

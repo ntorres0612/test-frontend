@@ -20,6 +20,14 @@ body {
     overflow: auto;
 }
 
+#info-user {
+    position: absolute;
+    right: 0;
+    width: max-content;
+    height: max-content;
+    margin-right: 10px;
+}
+
 #dashboard li a {
     display: block;
     color: #000;

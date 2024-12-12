@@ -16,8 +16,8 @@ export default function Login() {
   const [errorLogin, setErrorLogin] = useState<string>("");
 
   const initialValues: FormValues = {
-    email: "",
-    password: "",
+    email: "torres@gmail.com",
+    password: "torres123",
   };
 
   const [values, setValues] = useState<FormValues>({ ...initialValues });

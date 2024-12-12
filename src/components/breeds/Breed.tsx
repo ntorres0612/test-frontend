@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 //import { Film } from '../../data/model/Film';
 
 
@@ -17,51 +17,17 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { getBreeds, getBreedsById, getImagesById } from "../../api/breedApi";
 import { CatBreed } from "../../data/model/CatBreedModel";
 import { ImageModel } from "../../data/model/ImageModel";
-
-function createData(
-    name: string,
-    calories: number,
-    fat: number,
-    carbs: number,
-    protein: number,
-) {
-    return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-];
+import { Link } from "react-router-dom";
 
 
-
-interface Room {
-    id: string;
-    name: string;
-    players: number;
-    maxPlayers: number;
-}
-interface Film {
-    title: string;
-    year: number;
-}
-
-function sleep(duration: number): Promise<void> {
-    return new Promise<void>((resolve) => {
-        setTimeout(() => {
-            resolve();
-        }, duration);
-    });
-}
 
 const Breed: React.FC = () => {
 
-    const [open, setOpen] = React.useState(false);
-    const [breeds, setBreeds] = React.useState<readonly CatBreed[]>([]);
-    const [images, setImages] = React.useState<readonly ImageModel[]>([]);
-    const [selectedBreed, setSelectedBreed] = React.useState<CatBreed>();
-    const [loading, setLoading] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const [breeds, setBreeds] = useState<readonly CatBreed[]>([]);
+    const [images, setImages] = useState<readonly ImageModel[]>([]);
+    const [selectedBreed, setSelectedBreed] = useState<CatBreed>();
+    const [loading, setLoading] = useState(false);
 
 
     useEffect(() => {
@@ -82,7 +48,7 @@ const Breed: React.FC = () => {
             console.log("response", response);
             setSelectedBreed(response)
             getImagesById(response.reference_image_id).then((resp: any) => {
-                console.log('resp', resp);
+
                 setImages(resp)
             })
         })
@@ -93,7 +59,6 @@ const Breed: React.FC = () => {
         setOpen(true);
         (async () => {
             setLoading(true);
-            await sleep(1e3);
             setLoading(false);
 
 
@@ -143,63 +108,74 @@ const Breed: React.FC = () => {
                     )}
                 />
             </div>
-            <div id="search_body">
-                <div id="detail-breed-container">
-                    <div id="detail-breed-container-left">
-                        <Card sx={{ maxWidth: 345 }}>
-                            <CardMedia
-                                sx={{ height: 140 }}
-                                image="/static/images/cards/contemplative-reptile.jpg"
-                                title="green iguana"
-                            />
-                            <CardContent>
-                                <Typography gutterBottom variant="h5" component="div">
-                                    {selectedBreed?.name}
-                                </Typography>
-                                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                                    {selectedBreed?.description}
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button size="small">Share</Button>
-                                <Button size="small">Learn More</Button>
-                            </CardActions>
-                        </Card>
+            {selectedBreed ?
+                <Fragment>
+                    <div id="search_body">
+                        <div id="detail-breed-container">
+                            <div id="detail-breed-container-left">
+                                <Card sx={{ maxWidth: 345 }}>
+                                    <CardMedia
+                                        sx={{ height: 140 }}
+                                        image="/static/images/cards/contemplative-reptile.jpg"
+                                        title="green iguana"
+                                    />
+                                    <CardContent>
+                                        <Typography gutterBottom variant="h5" component="div">
+                                            {selectedBreed?.name}
+                                        </Typography>
+                                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                                            {selectedBreed?.description}
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        {selectedBreed ?
+                                            <Link to={`${selectedBreed?.wikipedia_url}`} target="_blank" ><Button size="small">Learn More</Button></Link>
+                                            : ""
+                                        }
+                                    </CardActions>
+                                </Card>
+                            </div>
+                            <div id="detail-breed-container-right">
+                                <img width={'50%'} src={images.length > 0 ? images[0].url : ""} />
+                            </div>
+                        </div>
                     </div>
-                    <div id="detail-breed-container-right">
-                        <img width={'100%'} height={'100%'} src={images.length > 0 ? images[0].url : ""} />
+                    <div id="search_footer">
+
+                        <TableContainer component={Paper}>
+                            <Table sx={{ minWidth: 650 }} aria-label="caption table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>name</TableCell>
+                                        <TableCell>weight</TableCell>
+                                        <TableCell>temperament</TableCell>
+                                        <TableCell>origin</TableCell>
+                                        <TableCell>life_span</TableCell>
+                                        <TableCell>adaptability</TableCell>
+                                        <TableCell >wikipedia_url</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+
+                                    <TableRow key={selectedBreed?.id}>
+                                        <TableCell component="th" scope="row">
+                                            {selectedBreed?.name}
+                                        </TableCell>
+                                        <TableCell >{`${JSON.stringify(selectedBreed?.weight)}`}</TableCell>
+                                        <TableCell >{selectedBreed?.temperament}</TableCell>
+                                        <TableCell >{selectedBreed?.origin}</TableCell>
+                                        <TableCell >{selectedBreed?.life_span}</TableCell>
+                                        <TableCell >{selectedBreed?.adaptability}</TableCell>
+                                        <TableCell ><Link to={`${selectedBreed?.wikipedia_url}`} target="_blank" >Wikipedia</Link></TableCell>
+                                    </TableRow>
+
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
                     </div>
-                </div>
-            </div>
-            <div id="search_footer">
-                <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="caption table">
-                        <caption>A basic table example with a caption</caption>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Dessert (100g serving)</TableCell>
-                                <TableCell align="right">Calories</TableCell>
-                                <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                                <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                                <TableCell align="right">Protein&nbsp;(g)</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {rows.map((row) => (
-                                <TableRow key={row.name}>
-                                    <TableCell component="th" scope="row">
-                                        {row.name}
-                                    </TableCell>
-                                    <TableCell align="right">{row.calories}</TableCell>
-                                    <TableCell align="right">{row.fat}</TableCell>
-                                    <TableCell align="right">{row.carbs}</TableCell>
-                                    <TableCell align="right">{row.protein}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </div>
+                </Fragment>
+                : ""
+            }
 
 
         </div>

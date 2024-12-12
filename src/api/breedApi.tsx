@@ -46,19 +46,23 @@ const getBreedsById = (id: string) => {
     });
 }
 
-const breedsSearch = (query: string) => {
-    return new Promise((resolve, reject) => {
 
-        instance.get(
-            `${API_URL}${prefix}search?query?${query}`
-        ).then((response) => {
-            resolve(response.data);
-        }).catch(function (error) {
-            reject(error);
-        });
+const breedsSearch = (q: string) => {
+    return new Promise((resolve, reject) => {
+        axios.get(`${API_URL}/breeds/search?q=${q}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`
+            }
+        })
+            .then(response => {
+                resolve(response.data);
+            })
+            .catch(err => {
+                console.error('Error recibido en la solicitud:', err);
+                reject(err)
+            });
     });
 }
-
 const getImagesById = (imageId: string) => {
     return new Promise((resolve, reject) => {
         axios.get(`${API_URL}/breeds/images/${imageId}`, {
